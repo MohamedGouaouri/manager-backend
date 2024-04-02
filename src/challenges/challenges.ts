@@ -43,7 +43,6 @@ export class Challenges {
         challenges = await this.challengeModel
           .find(query)
           .select(['title', 'category', 'description', 'level', 'creator'])
-          .populate('creator')
           .exec();
         return new ServiceResponseSuccess(challenges || []);
 

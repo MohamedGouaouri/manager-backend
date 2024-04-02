@@ -3,11 +3,11 @@ import { Schema as MongooseSchema } from 'mongoose';
 
 @Schema({ _id: false })
 export class FunctionInputDef {
-  @Prop({ required: true })
+  @Prop({ type: String, required: true })
   name: string;
 
-  @Prop()
-  type?: string;
+  @Prop({ type: String, required: true })
+  type: string;
 }
 
 export const FunctionInputDefSchema =
@@ -15,11 +15,11 @@ export const FunctionInputDefSchema =
 
 @Schema({ _id: false })
 export class FunctionInputValue {
-  @Prop({ required: true })
+  @Prop({ type: String, required: true })
   name: string;
 
-  @Prop()
-  value?: object;
+  @Prop({ type: Object, required: true })
+  value: object;
 }
 
 export const FunctionInputValueSchema =
@@ -27,13 +27,13 @@ export const FunctionInputValueSchema =
 
 @Schema()
 export class TestCase {
-  @Prop({ required: true })
+  @Prop({ type: Number, required: true })
   weight: number;
 
   @Prop({ type: [FunctionInputValueSchema] })
   inputs: FunctionInputValue[];
 
-  @Prop()
+  @Prop({ type: Object, required: true })
   output: object;
 }
 
@@ -52,7 +52,7 @@ export const CodeTextSchema = SchemaFactory.createForClass(CodeText);
 
 @Schema()
 export class Code {
-  @Prop({ required: true })
+  @Prop({ type: String, required: true })
   function_name: string;
 
   @Prop({ type: [CodeTextSchema] })
@@ -66,16 +66,16 @@ export const CodeSchema = SchemaFactory.createForClass(Code);
 
 @Schema()
 export class Challenge {
-  @Prop({ required: true })
+  @Prop({ type: String, required: true })
   title: string;
 
-  @Prop({ required: true })
+  @Prop({ type: String, required: true })
   category: string;
 
-  @Prop({ required: true })
+  @Prop({ type: String, required: true })
   description: string;
 
-  @Prop({ required: true })
+  @Prop({ type: String, required: true })
   level: string;
 
   @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'Manager' })

@@ -7,8 +7,8 @@ import {
   Post,
   Put,
   Query,
-  Req,
   Res,
+  UseGuards,
 } from '@nestjs/common';
 import {
   CreateChallengeDto,
@@ -16,19 +16,23 @@ import {
   UpdateChallengeDto,
 } from './challenges.dto';
 import { Challenges } from './challenges';
-import { Request, Response } from 'express';
+import { Response } from 'express';
 import { User } from 'src/auth/roles';
+import { AuthenticatedUser, Roles } from 'src/auth/decorators/user.decorator';
+import { AuthGuard } from 'src/auth/guards/auth.guard';
 
 @Controller('challenges')
+@Roles('manager')
+@UseGuards(AuthGuard)
 export class ChallengesController {
   constructor(private readonly challengesService: Challenges) {}
   @Get()
   async findAll(
     @Query() filters: QueryChallengeDto,
-    @Req() req: Request & { user: User },
     @Res() res: Response,
+    @AuthenticatedUser() user: User,
   ) {
-    const response = await this.challengesService.getAll(req.user, filters);
+    const response = await this.challengesService.getAll(user, filters);
     return res
       .status(response.getHttpStatus())
       .json(response.getHttpResponse());
@@ -36,13 +40,13 @@ export class ChallengesController {
 
   @Get(':id')
   async findOne(
+    @AuthenticatedUser() user: User,
     @Param('id') challengeId: string,
-    @Req() req: Request & { user: User },
     @Res() res: Response,
   ) {
     const response = await this.challengesService.getChallengeById(
       challengeId,
-      req.user,
+      user,
     );
     return res
       .status(response.getHttpStatus())
@@ -51,13 +55,13 @@ export class ChallengesController {
 
   @Post()
   async create(
+    @AuthenticatedUser() user: User,
     @Body() createChallengeDto: CreateChallengeDto,
-    @Req() req: Request & { user: User },
     @Res() res: Response,
   ) {
     const response = await this.challengesService.createChallenge(
       createChallengeDto,
-      req.user.id,
+      user.id,
     );
     return res
       .status(response.getHttpStatus())
